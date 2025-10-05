@@ -12,7 +12,7 @@ export const sendContactEmail = async (req, res) => {
     try {
         // Send email to admin
         await resend.emails.send({
-            from: process.env.FROM_EMAIL,
+            from: process.env.EMAIL_USER,
             to: process.env.ADMIN_EMAIL,
             subject: `New Contact Message from ${name}`,
             html: `
@@ -25,7 +25,7 @@ export const sendContactEmail = async (req, res) => {
 
         // Send auto-reply to user
         await resend.emails.send({
-            from: process.env.FROM_EMAIL,
+            from: process.env.EMAIL_USER,
             to: email,
             subject: "We’ve received your message!",
             html: `
