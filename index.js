@@ -10,7 +10,7 @@ const app = express();
 app.use(express.json());
 
 // CORS setup: Only frontend allowed
-const allowedOrigins = [process.env.FRONTEND_URL];
+const allowedOrigins = "https://heath-on-path-lab.vercel.app"
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) callback(null, true);
