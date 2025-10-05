@@ -10,7 +10,7 @@ const app = express();
 // 1️⃣ CORS Configuration
 // ---------------------
 app.use(cors({
-    origin: "https://heath-on-path-lab.vercel.app", // Only your frontend
+    origin: "https://heath-on-path-lab.vercel.app", // Only allow your frontend
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
 }));
@@ -23,6 +23,7 @@ app.use(express.json());
 // ---------------------
 // 3️⃣ Content Security Policy (CSP)
 // ---------------------
+// Must be before routes
 app.use((req, res, next) => {
     res.setHeader(
         "Content-Security-Policy",
@@ -58,7 +59,7 @@ app.post("/api/contact", async (req, res) => {
     }
 
     try {
-        // Nodemailer Transporter
+        // Nodemailer transporter
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
