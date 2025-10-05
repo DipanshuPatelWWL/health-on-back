@@ -21,22 +21,12 @@ app.use(cors({
 app.use(express.json());
 
 // ---------------------
-// 3️⃣ Content Security Policy (CSP)
+// 3️⃣ Content Security Policy (CSP) - single line
 // ---------------------
-// Must be before routes
 app.use((req, res, next) => {
     res.setHeader(
         "Content-Security-Policy",
-        `
-        default-src 'self';
-        script-src 'self' 'unsafe-inline' blob: https://heath-on-path-lab.vercel.app;
-        style-src 'self' 'unsafe-inline';
-        img-src 'self' data: https://heath-on-path-lab.vercel.app;
-        connect-src 'self' https://heath-on-back.onrender.com;
-        font-src 'self';
-        object-src 'none';
-        frame-src 'none';
-        `
+        "default-src 'self'; script-src 'self' 'unsafe-inline' blob: https://heath-on-path-lab.vercel.app; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://heath-on-path-lab.vercel.app; connect-src 'self' https://heath-on-back.onrender.com; font-src 'self'; object-src 'none'; frame-src 'none';"
     );
     next();
 });
