@@ -10,10 +10,14 @@ const app = express();
 // 1️⃣ CORS Configuration
 // ---------------------
 app.use(cors({
-    origin: "https://heath-on-path-lab.vercel.app", // Only allow your frontend
+    origin: [
+        "https://heath-on-path-lab.vercel.app",
+        // "http://localhost:5173"
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
 
 // ---------------------
 // 2️⃣ JSON Middleware
