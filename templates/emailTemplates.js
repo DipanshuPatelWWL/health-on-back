@@ -1,8 +1,8 @@
-export const getAdminTemplate = (name, email, message) => `
+export const getAdminTemplate = (name, email, phone, message) => `
 <div style="font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f6fdfd; padding: 20px;">
   <div style="max-width: 600px; margin: auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
     <div style="background-color: #0d9488; color: white; padding: 25px; text-align: center;">
-      <img src="https://heath-on-path-lab.vercel.app/assets/logo-C69_9xJN.png" alt="HealthOn Path Lab Logo"
+      <img src="https://health-on-path-lab.vercel.app/assets/logo-C69_9xJN.png" alt="HealthOn Path Lab Logo"
         style="width: 70px; height: 70px; border-radius: 50%; margin-bottom: 10px;" />
       <h1 style="margin: 0; font-size: 28px;">HealthOn Path Lab</h1>
       <p style="margin: 4px 0; font-size: 14px; color: #b2f5ea;">Trusted Diagnostic Centre</p>
@@ -15,6 +15,10 @@ export const getAdminTemplate = (name, email, message) => `
         <tr>
           <td style="font-weight: bold; padding: 8px; color: #0f766e;">Name:</td>
           <td style="padding: 8px; color: #333;">${name}</td>
+        </tr>
+        <tr style="background-color: #f9f9f9;">
+          <td style="font-weight: bold; padding: 8px; color: #0f766e;">Phone:</td>
+          <td style="padding: 8px; color: #333;">${phone}</td>
         </tr>
         <tr style="background-color: #f9f9f9;">
           <td style="font-weight: bold; padding: 8px; color: #0f766e;">Email:</td>
@@ -45,7 +49,7 @@ export const getUserTemplate = (name, message) => `
 <div style="font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f6fdfd; padding: 20px;">
   <div style="max-width: 600px; margin: auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
     <div style="background-color: #0d9488; color: white; padding: 25px; text-align: center;">
-      <img src="https://heath-on-path-lab.vercel.app/assets/logo-C69_9xJN.png" alt="HealthOn Path Lab Logo"
+      <img src="https://health-on-path-lab.vercel.app/assets/logo-C69_9xJN.png" alt="HealthOn Path Lab Logo"
         style="width: 70px; height: 70px; border-radius: 50%; margin-bottom: 10px;" />
       <h1 style="margin: 0; font-size: 28px;">HealthOn Path Lab</h1>
       <p style="margin: 4px 0; font-size: 14px; color: #b2f5ea;">Trusted Diagnostic Centre</p>
