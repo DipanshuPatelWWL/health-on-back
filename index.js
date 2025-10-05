@@ -7,24 +7,21 @@ dotenv.config();
 const app = express();
 app.use(express.json());
 
-//  Allowed origins
+// Allowed frontend origins
 const allowedOrigins = [
-    // "http://localhost:5173",
-    "https://heath-on-path-lab.vercel.app"
+    "https://heath-on-path-lab.vercel.app", // Vercel frontend
 ];
 
-app.use(
-    cors({
-        origin: (origin, callback) => {
-            if (!origin || allowedOrigins.includes(origin)) callback(null, true);
-            else callback(null, false);
-        },
-        methods: ["GET", "POST", "PUT", "DELETE", "PATCH"],
-        credentials: true,
-    })
-);
+app.use(cors({
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) callback(null, true);
+        else callback(new Error("Not allowed by CORS"));
+    },
+    methods: ["GET", "POST"],
+    credentials: true,
+}));
 
-// ✅ Routes
+// Routes
 app.post("/api/contact", sendContactEmail);
 
 const PORT = process.env.PORT || 5000;
