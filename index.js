@@ -5,25 +5,30 @@ import nodemailer from "nodemailer";
 
 dotenv.config();
 const app = express();
-app.use(cors());
-app.use(express.json());
 
-//  CORS Middleware
+// ---------------------
+// 1️⃣ CORS Configuration
+// ---------------------
 app.use(cors({
-    origin: "https://heath-on-path-lab.vercel.app", // Allow only your Vercel frontend
+    origin: "https://heath-on-path-lab.vercel.app", // Only your frontend
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
 }));
 
+// ---------------------
+// 2️⃣ JSON Middleware
+// ---------------------
 app.use(express.json());
 
-// 🚨 CSP Middleware
+// ---------------------
+// 3️⃣ Content Security Policy (CSP)
+// ---------------------
 app.use((req, res, next) => {
     res.setHeader(
         "Content-Security-Policy",
         `
         default-src 'self';
-        script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: https://heath-on-path-lab.vercel.app;
+        script-src 'self' 'unsafe-inline' blob: https://heath-on-path-lab.vercel.app;
         style-src 'self' 'unsafe-inline';
         img-src 'self' data: https://heath-on-path-lab.vercel.app;
         connect-src 'self' https://heath-on-back.onrender.com;
@@ -35,8 +40,16 @@ app.use((req, res, next) => {
     next();
 });
 
+// ---------------------
+// 4️⃣ Root Route (Health Check)
+// ---------------------
+app.get("/", (req, res) => {
+    res.send("Backend is running!");
+});
 
-// Contact Endpoint
+// ---------------------
+// 5️⃣ Contact Endpoint
+// ---------------------
 app.post("/api/contact", async (req, res) => {
     const { name, email, message } = req.body;
 
@@ -45,7 +58,7 @@ app.post("/api/contact", async (req, res) => {
     }
 
     try {
-        //  Transporter Setup
+        // Nodemailer Transporter
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -54,21 +67,18 @@ app.post("/api/contact", async (req, res) => {
             },
         });
 
-        // 🧬 Admin Email Template (Sent to You)
+        // Admin Email Template
         const adminHtml = `
         <div style="font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f6fdfd; padding: 20px;">
             <div style="max-width: 600px; margin: auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
                 <div style="background-color: #0d9488; color: white; padding: 25px; text-align: center;">
-                    <img src="https://heath-on-path-lab.vercel.app/assets/logo-C69_9xJN.png" alt="HealthOn Path Lab Logo"
-                        style="width: 70px; height: 70px; border-radius: 50%; margin-bottom: 10px;" />
+                    <img src="https://heath-on-path-lab.vercel.app/assets/logo-C69_9xJN.png" alt="HealthOn Path Lab Logo" style="width: 70px; height: 70px; border-radius: 50%; margin-bottom: 10px;" />
                     <h1 style="margin: 0; font-size: 28px;">HealthOn Path Lab</h1>
                     <p style="margin: 4px 0; font-size: 14px; color: #b2f5ea;">Trusted Diagnostic Centre</p>
                 </div>
-
                 <div style="padding: 25px;">
                     <h2 style="color: #0f766e;">New Contact Message</h2>
                     <p style="font-size: 15px; color: #444;">You’ve received a new message from your website:</p>
-
                     <table style="width: 100%; margin-top: 15px; border-collapse: collapse;">
                         <tr>
                             <td style="font-weight: bold; padding: 8px; color: #0f766e;">Name:</td>
@@ -83,41 +93,28 @@ app.post("/api/contact", async (req, res) => {
                             <td style="padding: 8px; color: #333; white-space: pre-wrap;">${message}</td>
                         </tr>
                     </table>
-
-                    <hr style="margin: 25px 0; border: none; border-top: 1px solid #ddd;" />
-
-                    <div style="font-size: 13px; color: #555; text-align: center;">
-                        <p><strong>HealthOn Path Lab</strong></p>
-                        <p>Raitha Rd, near AMOLI LAWN, near Hanuman Mandir, BKT, Mubarakpur, Lucknow, Uttar Pradesh 226013</p>
-                        <p>+91 6386510400 | healthonpathlab@gmail.com</p>
-                        <p><strong>Owner:</strong> Dr. Dipanshu Patel</p>
-                    </div>
                 </div>
-
                 <div style="background-color: #e6fffa; text-align: center; padding: 12px; font-size: 13px; color: #0f766e;">
                     © ${new Date().getFullYear()} HealthOn Path Lab — All rights reserved.
                 </div>
             </div>
         </div>`;
 
-        // 💌 Auto-Reply Email Template (Sent to Visitor)
+        // User Auto-Reply Template
         const userHtml = `
         <div style="font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f6fdfd; padding: 20px;">
             <div style="max-width: 600px; margin: auto; background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.08);">
                 <div style="background-color: #0d9488; color: white; padding: 25px; text-align: center;">
-                    <img src="https://heath-on-path-lab.vercel.app/assets/logo-C69_9xJN.png" alt="HealthOn Path Lab Logo"
-                        style="width: 70px; height: 70px; border-radius: 50%; margin-bottom: 10px;" />
+                    <img src="https://heath-on-path-lab.vercel.app/assets/logo-C69_9xJN.png" alt="HealthOn Path Lab Logo" style="width: 70px; height: 70px; border-radius: 50%; margin-bottom: 10px;" />
                     <h1 style="margin: 0; font-size: 28px;">HealthOn Path Lab</h1>
                     <p style="margin: 4px 0; font-size: 14px; color: #b2f5ea;">Trusted Diagnostic Centre</p>
                 </div>
-
                 <div style="padding: 25px;">
                     <h2 style="color: #0f766e;">Thank You, ${name}!</h2>
                     <p style="font-size: 15px; color: #444;">
                         We have received your message and our team will get back to you shortly.
                         Here’s a copy of your inquiry for your reference:
                     </p>
-
                     <table style="width: 100%; margin-top: 15px; border-collapse: collapse;">
                         <tr>
                             <td style="font-weight: bold; padding: 8px; color: #0f766e;">Your Message:</td>
@@ -126,15 +123,12 @@ app.post("/api/contact", async (req, res) => {
                             <td style="padding: 8px; color: #333; white-space: pre-wrap; background: #f9f9f9;">${message}</td>
                         </tr>
                     </table>
-
                     <p style="margin-top: 25px; color: #555;">
                         If your query is urgent, you can reach us directly at
                         <strong>+91 6386510400</strong> or <strong>healthonpathlab@gmail.com</strong>.
                     </p>
-
                     <p style="color: #0f766e; font-weight: bold;">— HealthOn Path Lab Team</p>
                 </div>
-
                 <div style="background-color: #e6fffa; text-align: center; padding: 12px; font-size: 13px; color: #0f766e;">
                     © ${new Date().getFullYear()} HealthOn Path Lab — All rights reserved.
                 </div>
@@ -164,4 +158,8 @@ app.post("/api/contact", async (req, res) => {
     }
 });
 
-app.listen(5000, () => console.log("Server running on port 5000"));
+// ---------------------
+// 6️⃣ Start Server
+// ---------------------
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
