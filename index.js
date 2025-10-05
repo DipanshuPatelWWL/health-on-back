@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // CORS setup (allow frontend)
-const allowedOrigins = ["https://heath-on-path-lab.vercel.app"];
+const allowedOrigins = ["https://health-on-path-lab.vercel.app"];
 app.use(
     cors({
         origin: (origin, callback) => {
