@@ -6,13 +6,11 @@ import { sendContactEmail } from "./controller/contact_controller.js";
 dotenv.config();
 const app = express();
 
-// Middleware
+// JSON middleware
 app.use(express.json());
 
-const allowedOrigins = [
-    "https://heath-on-path-lab.vercel.app"
-];
-
+// CORS setup: Only frontend allowed
+const allowedOrigins = [process.env.FRONTEND_URL];
 app.use(cors({
     origin: (origin, callback) => {
         if (!origin || allowedOrigins.includes(origin)) callback(null, true);
