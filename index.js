@@ -8,6 +8,34 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+//  CORS Middleware
+app.use(cors({
+    origin: "https://heath-on-path-lab.vercel.app", // Allow only your Vercel frontend
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+}));
+
+app.use(express.json());
+
+// 🚨 CSP Middleware
+app.use((req, res, next) => {
+    res.setHeader(
+        "Content-Security-Policy",
+        `
+        default-src 'self';
+        script-src 'self' 'unsafe-eval' 'unsafe-inline' blob: https://heath-on-path-lab.vercel.app;
+        style-src 'self' 'unsafe-inline';
+        img-src 'self' data: https://heath-on-path-lab.vercel.app;
+        connect-src 'self' https://heath-on-back.onrender.com;
+        font-src 'self';
+        object-src 'none';
+        frame-src 'none';
+        `
+    );
+    next();
+});
+
+
 // Contact Endpoint
 app.post("/api/contact", async (req, res) => {
     const { name, email, message } = req.body;
