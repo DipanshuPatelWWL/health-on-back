@@ -1,6 +1,4 @@
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import nodemailer from "nodemailer";
 
 export const sendContactEmail = async (req, res) => {
     const { name, email, message } = req.body;
@@ -10,34 +8,30 @@ export const sendContactEmail = async (req, res) => {
     }
 
     try {
-        // Send email to admin
-        await resend.emails.send({
-            from: process.env.EMAIL_USER,
-            to: process.env.ADMIN_EMAIL,
-            subject: `New Contact Message from ${name}`,
-            html: `
-        <h2>New Contact Message</h2>
-        <p><strong>Name:</strong> ${name}</p>
-        <p><strong>Email:</strong> ${email}</p>
-        <p><strong>Message:</strong> ${message}</p>
-      `,
+        // Create transporter (Gmail)
+        const transporter = nodemailer.createTransport({
+            service: "gmail",
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASS,
+            },
         });
 
-        // Send auto-reply to user
-        await resend.emails.send({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: "We’ve received your message!",
-            html: `
-        <h2>Hi ${name},</h2>
-        <p>Thank you for contacting HealthOn Path Lab! We will get back to you shortly.</p>
-        <p>Your message: ${message}</p>
-      `,
-        });
+        // Email options
+        const mailOptions = {
+            from: `"${name}" <${email}>`,           // Sender: form user
+            to: process.env.LAB_EMAIL,              // Receiver: your lab email
+            subject: `New Contact Form Submission from ${name}`,
+            text: message,
+            html: `<p>${message}</p><p>From: ${name} (${email})</p>`,
+        };
 
-        return res.json({ success: true, message: "Message sent successfully!" });
-    } catch (err) {
-        console.error("Resend email error:", err);
-        return res.status(500).json({ success: false, message: "Failed to send email" });
+        // Send email
+        await transporter.sendMail(mailOptions);
+
+        res.status(200).json({ success: true, message: "Email sent successfully!" });
+    } catch (error) {
+        console.error("Email error:", error);
+        res.status(500).json({ success: false, message: "Email could not be sent." });
     }
 };
