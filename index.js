@@ -1,10 +1,11 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import nodemailer from "nodemailer";
+import { Resend } from "resend";
 
 dotenv.config();
 const app = express();
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 // ---------------------
 // 1️⃣ CORS Configuration
@@ -17,7 +18,6 @@ app.use(cors({
     methods: ["GET", "POST", "PUT", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization"],
 }));
-
 
 // ---------------------
 // 2️⃣ JSON Middleware
@@ -42,15 +42,6 @@ app.post("/api/contact", async (req, res) => {
     }
 
     try {
-        // Nodemailer transporter
-        const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS,
-            },
-        });
-
         // Admin Email Template
         const adminHtml = `
         <div style="font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #f6fdfd; padding: 20px;">
@@ -119,17 +110,17 @@ app.post("/api/contact", async (req, res) => {
             </div>
         </div>`;
 
-        // Send Admin Email
-        await transporter.sendMail({
-            from: `"HealthOn Path Lab" <${process.env.EMAIL_USER}>`,
+        // Send admin notification
+        await resend.emails.send({
+            from: "HealthOn Path Lab <onboarding@resend.dev>",
             to: process.env.LAB_EMAIL || "dipanshupatel857@gmail.com",
             subject: `New Contact Message from ${name}`,
             html: adminHtml,
         });
 
-        // Send Auto-Reply to User
-        await transporter.sendMail({
-            from: `"HealthOn Path Lab" <${process.env.EMAIL_USER}>`,
+        // Send auto reply to user
+        await resend.emails.send({
+            from: "HealthOn Path Lab <onboarding@resend.dev>",
             to: email,
             subject: "We’ve received your message!",
             html: userHtml,
